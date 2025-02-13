@@ -1,7 +1,8 @@
-import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import { nanoid } from 'nanoid/non-secure';
 import { usePortal } from '../../hooks/usePortal';
 import type { PortalProps } from './types';
+import { useContextBridge } from 'its-fine';
 
 const PortalComponent = ({
   name: _providedName,
@@ -17,6 +18,11 @@ const PortalComponent = ({
 
   //#region variables
   const name = useMemo(() => _providedName || nanoid(), [_providedName]);
+  // Get context bridge to forward contexts to the portal
+  const ContextBridge = useContextBridge();
+  const childrenWithContextBridge = useMemo(() => {
+    return <ContextBridge>{children}</ContextBridge>;
+  }, [children]);
   //#endregion
 
   //#region refs
@@ -28,9 +34,11 @@ const PortalComponent = ({
   //#region callbacks
   const handleOnMount = useCallback(() => {
     if (_providedHandleOnMount) {
-      _providedHandleOnMount(() => addUpdatePortal(name, children));
+      _providedHandleOnMount(() =>
+        addUpdatePortal(name, childrenWithContextBridge)
+      );
     } else {
-      addUpdatePortal(name, children);
+      addUpdatePortal(name, childrenWithContextBridge);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [_providedHandleOnMount, addUpdatePortal]);
@@ -48,12 +56,14 @@ const PortalComponent = ({
 
   const handleOnUpdate = useCallback(() => {
     if (_providedHandleOnUpdate) {
-      _providedHandleOnUpdate(() => addUpdatePortal(name, children));
+      _providedHandleOnUpdate(() =>
+        addUpdatePortal(name, childrenWithContextBridge)
+      );
     } else {
-      addUpdatePortal(name, children);
+      addUpdatePortal(name, childrenWithContextBridge);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [_providedHandleOnUpdate, addUpdatePortal, children]);
+  }, [_providedHandleOnUpdate, addUpdatePortal, childrenWithContextBridge]);
   handleOnUpdateRef.current = handleOnUpdate;
   //#endregion
 
@@ -71,7 +81,7 @@ const PortalComponent = ({
   }, []);
   useEffect(() => {
     handleOnUpdateRef.current?.();
-  }, [children]);
+  }, [childrenWithContextBridge]);
   //#endregion
 
   return null;
