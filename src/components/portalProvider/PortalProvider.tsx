@@ -7,6 +7,7 @@ import {
 import { INITIAL_STATE } from '../../state/constants';
 import { reducer } from '../../state/reducer';
 import type { PortalProviderProps } from './types';
+import { FiberProvider } from 'its-fine';
 
 const PortalProviderComponent = ({
   rootHostName = 'root',
@@ -15,12 +16,14 @@ const PortalProviderComponent = ({
 }: PortalProviderProps) => {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
   return (
-    <PortalDispatchContext.Provider value={dispatch}>
-      <PortalStateContext.Provider value={state}>
-        {children}
-        {shouldAddRootHost && <PortalHost name={rootHostName} />}
-      </PortalStateContext.Provider>
-    </PortalDispatchContext.Provider>
+    <FiberProvider>
+      <PortalDispatchContext.Provider value={dispatch}>
+        <PortalStateContext.Provider value={state}>
+          {children}
+          {shouldAddRootHost && <PortalHost name={rootHostName} />}
+        </PortalStateContext.Provider>
+      </PortalDispatchContext.Provider>
+    </FiberProvider>
   );
 };
 
