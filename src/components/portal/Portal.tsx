@@ -4,6 +4,13 @@ import { usePortal } from '../../hooks/usePortal';
 import type { PortalProps } from './types';
 import { useContextBridge } from 'its-fine';
 
+const IGNORED_CONTEXTS_DISPLAY_NAMES = [
+  'TextAncestorContext',
+  'RootTagContext',
+  'ScrollViewContext',
+  'VirtualizedListContext',
+];
+
 const PortalComponent = ({
   name: _providedName,
   hostName,
@@ -19,7 +26,7 @@ const PortalComponent = ({
   //#region variables
   const name = useMemo(() => _providedName || nanoid(), [_providedName]);
   // Get context bridge to forward contexts to the portal
-  const ContextBridge = useContextBridge();
+  const ContextBridge = useContextBridge(IGNORED_CONTEXTS_DISPLAY_NAMES);
   const childrenWithContextBridge = useMemo(() => {
     return <ContextBridge>{children}</ContextBridge>;
   }, [children]);
