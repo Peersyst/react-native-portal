@@ -28,8 +28,8 @@ const PortalComponent = ({
   // Get context bridge to forward contexts to the portal
   const ContextBridge = useContextBridge(IGNORED_CONTEXTS_DISPLAY_NAMES);
   const childrenWithContextBridge = useMemo(() => {
-    return <ContextBridge>{children}</ContextBridge>;
-  }, [children]);
+    return <ContextBridge key={name}>{children}</ContextBridge>;
+  }, [name, children]);
   //#endregion
 
   //#region refs
