@@ -3,8 +3,9 @@
   "version": "1.0.14",
   "description": "A simplified portal implementation for ⭕️ React Native ⭕️",
   "main": "lib/commonjs/index.js",
-  "source": "lib/module/index.js",
+  "module": "lib/module/index.js",
   "types": "lib/typescript/index.d.ts",
+  "source": "lib/module/index.js",
   "files": [
     "src",
     "lib"
